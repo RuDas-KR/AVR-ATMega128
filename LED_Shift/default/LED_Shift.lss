@@ -3,21 +3,21 @@ LED_Shift.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000150  00000000  00000000  00000054  2**1
+  0 .text         00000154  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .debug_aranges 00000020  00000000  00000000  000001a4  2**0
+  1 .debug_aranges 00000020  00000000  00000000  000001a8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  2 .debug_pubnames 0000001b  00000000  00000000  000001c4  2**0
+  2 .debug_pubnames 0000001b  00000000  00000000  000001c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_info   00000075  00000000  00000000  000001df  2**0
+  3 .debug_info   00000075  00000000  00000000  000001e3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 0000003f  00000000  00000000  00000254  2**0
+  4 .debug_abbrev 0000003f  00000000  00000000  00000258  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   000000a0  00000000  00000000  00000293  2**0
+  5 .debug_line   000000a0  00000000  00000000  00000297  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_frame  00000020  00000000  00000000  00000334  2**2
+  6 .debug_frame  00000020  00000000  00000000  00000338  2**2
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    00000062  00000000  00000000  00000354  2**0
+  7 .debug_str    0000007d  00000000  00000000  00000358  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -71,7 +71,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e0 e5       	ldi	r30, 0x50	; 80
+  9e:	e4 e5       	ldi	r30, 0x54	; 84
   a0:	f1 e0       	ldi	r31, 0x01	; 1
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -82,7 +82,7 @@ Disassembly of section .text:
   ae:	b1 07       	cpc	r27, r17
   b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
   b2:	0e 94 5f 00 	call	0xbe	; 0xbe <main>
-  b6:	0c 94 a6 00 	jmp	0x14c	; 0x14c <_exit>
+  b6:	0c 94 a8 00 	jmp	0x150	; 0x150 <_exit>
 
 000000ba <__bad_interrupt>:
   ba:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -96,18 +96,18 @@ int main() {
   c2:	cd b7       	in	r28, 0x3d	; 61
   c4:	de b7       	in	r29, 0x3e	; 62
 	
-	DDRA = 0x81;	//Port A의 끝부분만 사용(Switch)
+	DDRA = 0x81;
   c6:	ea e3       	ldi	r30, 0x3A	; 58
   c8:	f0 e0       	ldi	r31, 0x00	; 0
   ca:	81 e8       	ldi	r24, 0x81	; 129
   cc:	80 83       	st	Z, r24
-	DDRB = 0xFF;	//Port B의 모든부분 사용(LED)
+	DDRB = 0xFF;
   ce:	e7 e3       	ldi	r30, 0x37	; 55
   d0:	f0 e0       	ldi	r31, 0x00	; 0
   d2:	8f ef       	ldi	r24, 0xFF	; 255
   d4:	80 83       	st	Z, r24
 
-	PORTB = 0x80;	//10000000 (LED)
+	PORTB = 0x80;
   d6:	e8 e3       	ldi	r30, 0x38	; 56
   d8:	f0 e0       	ldi	r31, 0x00	; 0
   da:	80 e8       	ldi	r24, 0x80	; 128
@@ -119,67 +119,69 @@ int main() {
   e0:	f0 e0       	ldi	r31, 0x00	; 0
   e2:	80 81       	ld	r24, Z
   e4:	88 23       	and	r24, r24
-  e6:	a4 f4       	brge	.+40     	; 0x110 <main+0x52>
-			if(PORTB = 0x01)
+  e6:	ac f4       	brge	.+42     	; 0x112 <main+0x54>
+			if(PORTB != 0x80)
   e8:	e8 e3       	ldi	r30, 0x38	; 56
   ea:	f0 e0       	ldi	r31, 0x00	; 0
-  ec:	81 e0       	ldi	r24, 0x01	; 1
-  ee:	80 83       	st	Z, r24
+  ec:	80 81       	ld	r24, Z
+  ee:	80 38       	cpi	r24, 0x80	; 128
+  f0:	81 f0       	breq	.+32     	; 0x112 <main+0x54>
 				PORTB = (1<<PORTB);
-  f0:	a8 e3       	ldi	r26, 0x38	; 56
-  f2:	b0 e0       	ldi	r27, 0x00	; 0
-  f4:	e8 e3       	ldi	r30, 0x38	; 56
-  f6:	f0 e0       	ldi	r31, 0x00	; 0
-  f8:	80 81       	ld	r24, Z
-  fa:	28 2f       	mov	r18, r24
-  fc:	30 e0       	ldi	r19, 0x00	; 0
-  fe:	81 e0       	ldi	r24, 0x01	; 1
- 100:	90 e0       	ldi	r25, 0x00	; 0
- 102:	02 2e       	mov	r0, r18
- 104:	02 c0       	rjmp	.+4      	; 0x10a <main+0x4c>
- 106:	88 0f       	add	r24, r24
- 108:	99 1f       	adc	r25, r25
- 10a:	0a 94       	dec	r0
- 10c:	e2 f7       	brpl	.-8      	; 0x106 <main+0x48>
- 10e:	8c 93       	st	X, r24
+  f2:	a8 e3       	ldi	r26, 0x38	; 56
+  f4:	b0 e0       	ldi	r27, 0x00	; 0
+  f6:	e8 e3       	ldi	r30, 0x38	; 56
+  f8:	f0 e0       	ldi	r31, 0x00	; 0
+  fa:	80 81       	ld	r24, Z
+  fc:	28 2f       	mov	r18, r24
+  fe:	30 e0       	ldi	r19, 0x00	; 0
+ 100:	81 e0       	ldi	r24, 0x01	; 1
+ 102:	90 e0       	ldi	r25, 0x00	; 0
+ 104:	02 2e       	mov	r0, r18
+ 106:	02 c0       	rjmp	.+4      	; 0x10c <main+0x4e>
+ 108:	88 0f       	add	r24, r24
+ 10a:	99 1f       	adc	r25, r25
+ 10c:	0a 94       	dec	r0
+ 10e:	e2 f7       	brpl	.-8      	; 0x108 <main+0x4a>
+ 110:	8c 93       	st	X, r24
 		}
 
 		if(PINA & 0x01) {
- 110:	e9 e3       	ldi	r30, 0x39	; 57
- 112:	f0 e0       	ldi	r31, 0x00	; 0
- 114:	80 81       	ld	r24, Z
- 116:	88 2f       	mov	r24, r24
- 118:	90 e0       	ldi	r25, 0x00	; 0
- 11a:	81 70       	andi	r24, 0x01	; 1
- 11c:	90 70       	andi	r25, 0x00	; 0
- 11e:	88 23       	and	r24, r24
- 120:	f1 f2       	breq	.-68     	; 0xde <main+0x20>
-			if(PORTB = 0x80)
- 122:	e8 e3       	ldi	r30, 0x38	; 56
- 124:	f0 e0       	ldi	r31, 0x00	; 0
- 126:	80 e8       	ldi	r24, 0x80	; 128
- 128:	80 83       	st	Z, r24
+ 112:	e9 e3       	ldi	r30, 0x39	; 57
+ 114:	f0 e0       	ldi	r31, 0x00	; 0
+ 116:	80 81       	ld	r24, Z
+ 118:	88 2f       	mov	r24, r24
+ 11a:	90 e0       	ldi	r25, 0x00	; 0
+ 11c:	81 70       	andi	r24, 0x01	; 1
+ 11e:	90 70       	andi	r25, 0x00	; 0
+ 120:	88 23       	and	r24, r24
+ 122:	e9 f2       	breq	.-70     	; 0xde <main+0x20>
+			if(PORTB != 0x01)
+ 124:	e8 e3       	ldi	r30, 0x38	; 56
+ 126:	f0 e0       	ldi	r31, 0x00	; 0
+ 128:	80 81       	ld	r24, Z
+ 12a:	81 30       	cpi	r24, 0x01	; 1
+ 12c:	c1 f2       	breq	.-80     	; 0xde <main+0x20>
 				PORTB = (1>>PORTB);
- 12a:	a8 e3       	ldi	r26, 0x38	; 56
- 12c:	b0 e0       	ldi	r27, 0x00	; 0
- 12e:	e8 e3       	ldi	r30, 0x38	; 56
- 130:	f0 e0       	ldi	r31, 0x00	; 0
- 132:	80 81       	ld	r24, Z
- 134:	28 2f       	mov	r18, r24
- 136:	30 e0       	ldi	r19, 0x00	; 0
- 138:	81 e0       	ldi	r24, 0x01	; 1
- 13a:	90 e0       	ldi	r25, 0x00	; 0
- 13c:	02 2e       	mov	r0, r18
- 13e:	02 c0       	rjmp	.+4      	; 0x144 <main+0x86>
- 140:	95 95       	asr	r25
- 142:	87 95       	ror	r24
- 144:	0a 94       	dec	r0
- 146:	e2 f7       	brpl	.-8      	; 0x140 <main+0x82>
- 148:	8c 93       	st	X, r24
- 14a:	c9 cf       	rjmp	.-110    	; 0xde <main+0x20>
+ 12e:	a8 e3       	ldi	r26, 0x38	; 56
+ 130:	b0 e0       	ldi	r27, 0x00	; 0
+ 132:	e8 e3       	ldi	r30, 0x38	; 56
+ 134:	f0 e0       	ldi	r31, 0x00	; 0
+ 136:	80 81       	ld	r24, Z
+ 138:	28 2f       	mov	r18, r24
+ 13a:	30 e0       	ldi	r19, 0x00	; 0
+ 13c:	81 e0       	ldi	r24, 0x01	; 1
+ 13e:	90 e0       	ldi	r25, 0x00	; 0
+ 140:	02 2e       	mov	r0, r18
+ 142:	02 c0       	rjmp	.+4      	; 0x148 <main+0x8a>
+ 144:	95 95       	asr	r25
+ 146:	87 95       	ror	r24
+ 148:	0a 94       	dec	r0
+ 14a:	e2 f7       	brpl	.-8      	; 0x144 <main+0x86>
+ 14c:	8c 93       	st	X, r24
+ 14e:	c7 cf       	rjmp	.-114    	; 0xde <main+0x20>
 
-0000014c <_exit>:
- 14c:	f8 94       	cli
+00000150 <_exit>:
+ 150:	f8 94       	cli
 
-0000014e <__stop_program>:
- 14e:	ff cf       	rjmp	.-2      	; 0x14e <__stop_program>
+00000152 <__stop_program>:
+ 152:	ff cf       	rjmp	.-2      	; 0x152 <__stop_program>
