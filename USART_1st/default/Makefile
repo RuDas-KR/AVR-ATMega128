@@ -1,11 +1,11 @@
 ###############################################################################
-# Makefile for the project USART
+# Makefile for the project usart
 ###############################################################################
 
 ## General Flags
-PROJECT = USART
+PROJECT = usart
 MCU = atmega128
-TARGET = USART.elf
+TARGET = usart.elf
 CC = avr-gcc
 
 CPP = avr-g++
@@ -25,7 +25,7 @@ ASMFLAGS += -x assembler-with-cpp -Wa,-gdwarf2
 
 ## Linker flags
 LDFLAGS = $(COMMON)
-LDFLAGS +=  -Wl,-Map=USART.map
+LDFLAGS +=  -Wl,-Map=usart.map
 
 
 ## Intel Hex file production flags
@@ -37,16 +37,16 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = USART.o 
+OBJECTS = usart.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
 
 ## Build
-all: $(TARGET) USART.hex USART.eep USART.lss size
+all: $(TARGET) usart.hex usart.eep usart.lss size
 
 ## Compile
-USART.o: ../USART.c
+usart.o: ../usart.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
@@ -69,7 +69,7 @@ size: ${TARGET}
 ## Clean target
 .PHONY: clean
 clean:
-	-rm -rf $(OBJECTS) USART.elf dep/* USART.hex USART.eep USART.lss USART.map
+	-rm -rf $(OBJECTS) usart.elf dep/* usart.hex usart.eep usart.lss usart.map
 
 
 ## Other dependencies

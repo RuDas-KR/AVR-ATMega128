@@ -1,19 +1,10 @@
 #include<avr/io.h>
+#include<util/delay.h>
 
 #define USART0 0
 #define USART1 1
 
-main() {
-	USART_init(0,8);
 
-	USART0_send('S');
-
-	USART0_recive();
-}
-
-
-
-// 프레임 포멧 설정
 void USART_init(unsigned char ch, unsigned int ubrr_baud)
 {
 	if (ch == USART0) {
@@ -29,14 +20,72 @@ void USART_init(unsigned char ch, unsigned int ubrr_baud)
 		}
 }
 
-// 폴링방식 문자열 송신
 void USART0_send(char data){
-	while (!(UCSR0A & (1 << UDRE0)) ); // UDR 레지스터가 빌 때까지 폴링
-	UDR0 = data; // UDR 레지스터에 값을 기록
+	while (!(UCSR0A & (1 << UDRE0)) );
+	UDR0 = data;
 }
 
-// 폴링방식 문자열 수신
+
 char USART0_receive(){
-	while (!(UCSR0A & (1 << RXC0)) ); // UDR 레지스터에 문자 수신 검사
+	while (!(UCSR0A & (1 << RXC0)) );
 	return UDR0;
+}
+
+int main() {
+	USART_init(0,8);
+	DDRA=0xFF;
+
+	unsigned char text[]="Start USART \r\n";
+	unsigned char i=0;
+	unsigned char str;
+
+	while(text[i] != '\0') {
+		USART0_send(text[i++]);
+	}
+
+	while(1) {
+		str=USART0_receive();
+		USART0_send(str);
+	
+		if(str=='1') {
+			PORTA=0x80;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='2') {
+			PORTA=0x40;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='3') {
+			PORTA=0x20;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='4') {
+			PORTA=0x10;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='5') {
+			PORTA=0x08;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='6') {
+			PORTA=0x04;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='7') {
+			PORTA=0x02;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+		else if(str=='8') {
+			PORTA=0x01;
+			_delay_ms(500);
+			PORTA=0x00;
+		}
+	}
 }
