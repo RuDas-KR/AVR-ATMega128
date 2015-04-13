@@ -13,16 +13,14 @@ int main() {
 	DDRG = 0xFF;
 	
 	while(1) {
-		fnd(SELECT[0], SEG[0]);
-		fnd(SELECT[1], SEG[1]);
-		fnd(SELECT[2], SEG[2]);
-		fnd(SELECT[3], SEG[3]);
+		for(i=0; i<4; i++) {
+			fnd(SELECT[i], SEG[i]);
+		}
 	}
-
 }
 
 void fnd(int port, int num) {
 	PORTG = port;
 	PORTC = num;
-	_delay_ms(30);
+	_delay_ms(4);
 }
