@@ -1,6 +1,8 @@
 ################################################################################
-# Automatically-generated file. Do not edit or delete the file
+# Automatically-generated file. Do not edit!
 ################################################################################
 
-UART-FND_shift.c
+USER_OBJS :=
+
+LIBS :=
 
